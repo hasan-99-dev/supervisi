@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supervisi PM-KBC • oleh Hasan Basri — Neo-Brutalism</title>
+<meta name="description" content="Aplikasi Supervisi Guru PM-KBC — dilaksanakan Kepala Madrasah, diketahui Pengawas Madrasah. Login multi-role, database Spreadsheet via Apps Script.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='6' y='6' width='88' height='88' rx='18' fill='%23FFC800' stroke='black' stroke-width='7'/><text x='50' y='68' font-size='48' text-anchor='middle' font-weight='900' font-family='Arial'>S!</text></svg>">
+</head>
+<body>
+
+<!-- ==================== AUTH (LOGIN GATE) ==================== -->
+<div id="authView">
+  <div class="marquee"><span>★ SELAMAT DATANG DI APLIKASI SUPERVISI PM-KBC ★ PENGAWAS MADRASAH ★ KEPALA MADRASAH ★ GURU ★ DATABASE SPREADSHEET VIA APPS SCRIPT ★ TEMA NEO-BRUTALISM ★&nbsp;</span></div>
+  <div class="authwrap">
+    <div class="authgrid">
+      <div class="hero">
+        <div class="shapes"><span class="sh1">★</span><span class="sh2">✓</span></div>
+        <span class="kicker" style="letter-spacing:.5px;text-transform:none">Oleh: Hasan Basri</span>
+        <h1>SUPERVISI <span class="y">PM-KBC</span><br>GURU <span class="b">HEBAT!</span></h1>
+        <p>Aplikasi supervisi pembelajaran terpadu: perencanaan, pelaksanaan, penilaian, kokurikuler, ekstrakurikuler &amp; iklim madrasah — dengan rekap nilai otomatis + cetak laporan resmi.</p>
+        <ul>
+          <li>🔐 <b>Login multi-role:</b> Admin • Kepala Madrasah • Pengawas • Guru</li>
+          <li>✍️ <b>Alur:</b> Kepala Madrasah melaksanakan supervisi → diketahui Pengawas Madrasah</li>
+          <li>📊 Database <b>Google Spreadsheet</b> via <b>Apps Script</b></li>
+          <li>🖨️ Rekap otomatis, predikat &amp; <b>cetak laporan PDF</b></li>
+        </ul>
+      </div>
+      <div class="authcard" id="authCard">
+        <div id="loginPane">
+          <h2>🔐 LOGIN</h2>
+          <p class="sub">Masuk untuk mengakses aplikasi supervisi.</p>
+          <div class="fgroup"><label>Username <span class="req">*</span></label><input id="liUser" placeholder="Username Anda" autocomplete="username"></div>
+          <div class="fgroup"><label>Password <span class="req">*</span></label><input id="liPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+          <button class="btn btn-dark" id="btnLogin">Masuk →</button>
+          <div class="divider">atau</div>
+          <button class="btn btn-yellow" id="btnShowRegister">📝 Daftar Akun Baru</button>
+          <div class="connbox" id="connLocked" style="display:none">
+            <div class="t">☁️ Database Terhubung</div>
+            <div class="hint" style="margin:0">Aplikasi ini sudah terhubung ke <b>Google Spreadsheet</b> melalui Apps Script. Pengaturan koneksi &amp; backup disembunyikan agar tidak dapat diubah pengguna lain.</div>
+            <div class="btnrow" style="margin-top:10px"><button class="btn btn-sm btn-grey" id="btnUnlockConn">⚙️ Ubah Koneksi (Admin)</button></div>
+          </div>
+          <div class="connbox" id="connBox">
+            <div class="t">⚙️ Sumber Data</div>
+            <div class="frow" style="margin-bottom:8px">
+              <label style="font-weight:800;font-size:.78rem"><input type="radio" name="modePick" value="demo" checked> 🧪 Mode Demo</label>
+              <label style="font-weight:800;font-size:.78rem"><input type="radio" name="modePick" value="api"> ☁️ Apps Script</label>
+            </div>
+            <input id="apiUrlInput" placeholder="Tempel URL Web App Apps Script …/exec">
+            <div class="hint">Mode Demo = data tersimpan di browser (coba-coba). Mode Apps Script = data tersimpan di Google Spreadsheet. <b>Lihat README untuk cara deploy.</b></div>
+            <div class="btnrow" style="margin-top:10px">
+              <button class="btn btn-sm btn-grey" id="btnTestConn">🔌 Tes Koneksi</button>
+              <button class="btn btn-sm btn-green" id="btnInitDB">🗄️ Init Database</button>
+            </div>
+          </div>
+        </div>
+        <div id="registerPane" class="hidden">
+          <h2>📝 DAFTAR AKUN</h2>
+          <p class="sub">Pengawas, Kepala &amp; Guru wajib mendaftar. Akun aktif setelah disetujui Admin.</p>
+          <div class="fgroup"><label>Nama Lengkap <span class="req">*</span></label><input id="rgNama" placeholder="Nama sesuai identitas"></div>
+          <div class="frow">
+            <div class="fgroup"><label>Username <span class="req">*</span></label><input id="rgUser" placeholder="tanpa spasi"></div>
+            <div class="fgroup"><label>Password <span class="req">*</span></label><input id="rgPass" type="password" placeholder="min. 4 karakter"></div>
+          </div>
+          <div class="fgroup"><label>Role <span class="req">*</span></label>
+            <select id="rgRole"><option value="Pengawas Madrasah">Pengawas Madrasah</option><option value="Kepala Madrasah">Kepala Madrasah</option><option value="Guru" selected>Guru</option></select>
+          </div>
+          <div class="fgroup"><label>Madrasah / Tempat Tugas</label><input id="rgMadrasah" placeholder="cth: MI Nurul Huda"></div>
+          <div class="frow">
+            <div class="fgroup"><label>NIP</label><input id="rgNip" placeholder="opsional"></div>
+            <div class="fgroup"><label>No. HP</label><input id="rgHp" placeholder="opsional"></div>
+          </div>
+          <button class="btn btn-primary" id="btnRegister">Daftar Sekarang →</button>
+          <div style="margin-top:10px;text-align:center"><button class="linklike" id="btnBackLogin">← Kembali ke Login</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="appView" class="hidden">
+  <div class="marquee"><span id="marqueeUser">★ SUPERVISI PM-KBC ★&nbsp;</span></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="sticker">📋</div>
+        <h1>SUPERVISI <span class="em">PM-KBC</span></h1>
+        <p>Oleh: Hasan Basri • Neo-Brutal</p>
+      </div>
+      <div class="userchip"><div class="nm" id="ucName">-</div><span class="rl" id="ucRole">-</span></div>
+      <nav class="nav" id="mainNav"></nav>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <button class="burger" id="btnBurger">☰</button>
+        <h2 id="pageTitle">Dashboard</h2>
+        <span class="mode-pill mode-demo" id="modePill">🧪 MODE DEMO</span>
+      </div>
+      <div id="page"></div>
+      <div class="foot">© 2026 Supervisi PM-KBC • Oleh: Hasan Basri • Dibangun dengan ♥ bertema Neo-Brutalism</div>
+    </main>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toasts"></div>
+
+<script src="js/instrumen.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
